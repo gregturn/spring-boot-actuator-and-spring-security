@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8" />
+    <title>Spring Security Basics</title>
+    <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+
+    <div>
+        <span sec:authentication="name" /> has <span sec:authentication="authorities" />
+        <form method="post" th:action="@{/logout}">
+            <input type="submit" value="Sign Out"/>
+        </form>
+    </div>
+
+    <h1>Spring Security</h1>
+    <h2>@PathVariable breaks @AuthenticationPrincipal</h2>
+    <p>
+        If you create a Spring MVC method with a route using @PathVariable, Spring Security somehow loses access
+        to the authentication token.
+    </p>
+    <p>
+        If you run this app, surf to http://localhost:8080, login in as greg/turnquist, and then inspect the console,
+        you'll see that the first image (@PathVariable-based route) generates a "Unknown user" message, which indicates
+        that @AuthenticationPrincipal yields a null. Whereas the second image's route will show the current user.
+    </p>
+    <p>
+        If you comment Actuator out of the build, then it works correctly.
+    </p>
+
+    <div>
+        <table>
+            <tbody>
+            <tr>
+                <td>
+                    <!-- This one will log "Unknown user is looking up raw image" -->
+                    <img class="thumbnail" th:src="@{'/images/keep-calm-and-learn-javascript.jpg'}" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <!-- While this one will work just fine -->
+                    <img class="thumbnail" th:src="@{'/image'}" />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
